@@ -1,0 +1,319 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>生命周期</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <p>原文链接：<a href="https://doc.rust-lang.org/nomicon/lifetimes.html">https://doc.rust-lang.org/nomicon/lifetimes.html</a></p>
+<h1 id="生命周期"><a class="header" href="#生命周期">生命周期</a></h1>
+<p>Rust在整个生命周期里强制执行生命周期的规则。生命周期说白了就是作用域的名字。每一个引用以及包含引用的数据结构，都要有一个生命周期来指定它保持有效的作用域。</p>
+<p>在函数体内，Rust通常不需要你显式地给生命周期起名字。这是因为在本地上下文里，一般没有必要关注生命周期。Rust知道程序的全部信息，从而可以完美地执行各种操作。它可能会引入许多匿名或者临时的作用域让程序顺利执行。</p>
+<p>但是如果你要跨出函数的边界，就需要关心生命周期了。生命周期用这样的符号表示：<code>'a</code>,<code>'static</code>。为了更清晰地了解生命周期，我们假设我们可以为生命周期打标签，去掉本章所有例子的语法糖。</p>
+<p>最开始，我们的示例代码对作用域和生命周期使用了很激进的语法糖特性——甜得像玉米糖浆一样，因为把所有的东西都显式地写出来实在很讨厌。所有的Rust代码都采用比较激进的理论以省略“显而易见”的东西。</p>
+<p>一个特别有意思的语法糖是，每一个<code>let</code>表达式都隐式引入了一个作用域。大多数情况下，这一点并不重要。但是当变量之间互相引用的时候，这就很重要了。举个简单的例子，我们彻底去掉下面这段代码的语法糖：</p>
+<pre><code class="language-Rust">let x = 0;
+let y = &amp;x;
+let z= &amp;y;
+</code></pre>
+<p>借用检查器通常会尽可能减少生命周期的范围，所以去掉语法糖后的代码大概像这样：</p>
+<pre><code class="language-Rust">// 注意：'a: { 和 &amp;'b x 不是合法的语法
+'a: {
+    let x: i32 = 0;
+    'b: {
+        // 生命周期是'b，因为这就足够了
+        let y: &amp;'b i32 = &amp;'b x;
+        'c: {
+            // 'c也一样
+            let z: &amp;'c &amp;'b i32 = &amp;'c y;
+        }
+    }
+}
+</code></pre>
+<p>哇！这样的写法……太可怕了。我们先停下来感谢Rust把这一切都简化掉了。</p>
+<p>将引用传递到作用域以外会导致生命周期扩大：</p>
+<pre><code class="language-Rust">let x = 0;
+let z;
+let y = &amp;x;
+z = y;
+</code></pre>
+<pre><code class="language-Rust">'a: {
+    let x: i32 = 0;
+    'b: {
+        let z: &amp;'b i32;
+        'c: {
+            // 必须使用'b，因为引用被传递到了'b的作用域
+            let y: &amp;'b i32 = &amp;'b x;
+            z = y;
+        }
+    }
+}
+</code></pre>
+<h2 id="示例引用超出被引用内容生命周期"><a class="header" href="#示例引用超出被引用内容生命周期">示例：引用超出被引用内容生命周期</a></h2>
+<p>好了，让我们再看一遍曾经举过的一个例子：</p>
+<pre><code class="language-Rust">fn as_str(data: &amp;u32) -&gt; &amp;str {
+    let s = format!("{}", data);
+    &amp;s
+}
+</code></pre>
+<p>去掉语法糖：</p>
+<pre><code class="language-Rust">fn as_str&lt;'a&gt;(data: &amp;'a u32) -&gt; &amp;'a str {
+    'b: {
+        let s = format!("{}", data);
+        return &amp;'a s;
+    }
+}
+</code></pre>
+<p>函数<code>as_str</code>的签名里接受了一个带有生命周期的u32类型的引用，并且保证会返回一个生命周期一样长的str类型的引用。从这个签名我们就已经可以看出问题了。它表示我们必须到那个u32引用的作用域，或者比它还要早的作用域里去找一个str。这就有点不合理了。</p>
+<p>接下来我们生成一个字符串<code>s</code>，然后返回它的引用。我们的函数要求这个引用的有效期不能小于<code>'a</code>，那是我们给引用指定的生命周期。不幸的是，<code>s</code>是在作用域'b里面定义的。除非'b包含'a这个函数才可能是正确的——而这显然不可能，因为'a必须包含它所调用的函数。这样我们创建了一个生命周期超出被引用内容的引用，这明显违背了之前提到的引用的第一条规则。编译器十分感动然后拒绝了我们。</p>
+<p>我们扩展一下这个例子，一边看得更清楚：</p>
+<pre><code class="language-Rust">fn as_str&lt;'a&gt;(data: &amp;'a u32) -&gt; &amp;'a str {
+    'b: {
+        let s = format!("{}", data);
+        return &amp;'a s;
+    }
+}
+
+fn main() {
+    'c: {
+        let x: u32 = 0;
+        'd: {
+            // 这里引入了一个匿名作用域，因为借用不需要在整个x的作用域内生效
+            // as_str的返回值必须引用一个在函数调用前就存在的str
+            // 显然事实不是这样的。
+            println!("{}", as_str::&lt;'d&gt;(&amp;'d x));
+        }
+    }
+}
+</code></pre>
+<p>完蛋了！</p>
+<p>当然，这个函数的正确写法应该是这样的。</p>
+<pre><code class="language-Rust">fn to_string(data: &amp;u32) -&gt; String {
+    format!("{}", data)
+}
+</code></pre>
+<p>我们必须创建一个值然后连同它的所有权一起返回。除非一个字符串是<code>&amp;'a u32</code>的成员，我们才能返回<code>&amp;'a str</code>，显然事情并不是这样的。</p>
+<p>（其实我们也可以返回一个字符串的字面量，它是一个全局的变量，可以认为是处于栈的底部。尽管这样极大限制了函数的使用场合。）</p>
+<h2 id="示例存在可变引用的别名"><a class="header" href="#示例存在可变引用的别名">示例：存在可变引用的别名</a></h2>
+<p>在看另一个老的例子：</p>
+<pre><code class="language-Rust">let mut data = vec![1, 2,3];
+let x = &amp;data[0];
+data.push(4);
+println!("{}", x);
+</code></pre>
+<pre><code class="language-Rust">'a: {
+    let mut data: Vec&lt;i32&gt; = vec![1, 2, 3];
+    'b: {
+        // 对于这个借用来说，'b已经足够大了
+        // （借用只需要在println!中生效即可）
+        let x: &amp;'b i32 = Index::index::&lt;'b&gt;(&amp;'b data, 0);
+        'c: {
+            // 引入一个临时作用域，因为&amp;mut不需要存在更长时间
+            Vec::push(&amp;'c mut data, e);
+        }
+        println!("{}", x);
+    }
+}
+</code></pre>
+<p>这里的问题更加微妙也更有趣。我们希望Rust出于如下的原因拒绝编译这段代码：我们有一个有效的指向<code>data</code>的内部数据的引用<code>x</code>，而同时又创建了一个<code>data</code>的可变引用用于执行<code>push</code>。也就是说出现了可变引用的别名，这违背了引用的第二条规则。</p>
+<p>但是Rust其实并非因为这个原因判断这段代码有问题。Rust不知道<code>x</code>是<code>data</code>的子内容的引用，它其实完全不知道Vec的内部是什么样子的。它只知道<code>x</code>必须在<code>'b</code>范围内有效，这样才能打印其中的内容。函数<code>Index::index</code>的签名因此要求传递的<code>data</code>的引用也必须在<code>'b</code>的范围内有效。当我们调用<code>push</code>的时候，Rust发现我们要创建一个<code>&amp;'c mut data</code>。它知道<code>'c</code>是包含在<code>'b</code>以内的，因为<code>&amp;'b data</code>还存活着，所以它拒绝了这段程序。</p>
+<p>我们看到了生命周期系统要比引用的保护措施更加简单粗暴。大多数情况下这也没什么，它让我们不用没完没了地向编译器解释我们的程序。但是这也意味着许多语义上正确的程序会被编译器拒绝，因为生命周期的规则太死板了。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="3.2.别名.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="3.4.生命周期的局限.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="3.2.别名.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="3.4.生命周期的局限.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

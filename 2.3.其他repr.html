@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>其他repr</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <p>原文链接：<a href="https://doc.rust-lang.org/nomicon/other-reprs.html">https://doc.rust-lang.org/nomicon/other-reprs.html</a></p>
+<h1 id="可选的数据表达方式"><a class="header" href="#可选的数据表达方式">可选的数据表达方式</a></h1>
+<p>Rust允许你选择其他的数据布局策略。</p>
+<h2 id="reprc"><a class="header" href="#reprc">repr(C)</a></h2>
+<p>这是最重要的一种<code>repr</code>。它的目的很简单，就是和C保持一致。数据的顺序、大小、对齐方式都和你在C或C++中见到的一摸一样。所有你需要通过FFI交互的类型都应该有<code>repr(C)</code>，因为C是程序设计领域的世界语。而且如果我们要在数据布局方面玩一些花活的话，比如把数据重新解析成另一种类型，<code>repr(C)</code>也是很有必要的。</p>
+<p>但是，一定不要忘了Rust的那几个奇行种。<code>repr(C)</code>的存在有双重作用，既为了FFI同时也为了常规的布局控制，所以它可以被应用于那些在FFI中没有意义甚至会产生错误的类型。</p>
+<ul>
+<li>尽管标准的C语言不支持大小为0的类型，但ZST的尺寸仍然是0。而且它也与C++中的空类型有着明显的不同，C++的空类型还是要占用一个字节的空间的。</li>
+<li>DST的指针（胖指针），元组，和带有成员变量的枚举都是C中没有的，因此也不是FFI安全的。</li>
+<li>如果<code>T</code>是一个<a href="https://doc.rust-lang.org/nomicon/ffi.html#the-nullable-pointer-optimization">FFI安全的非空指针</a>,那么<code>Option&lt;T&gt;</code>可以保证和<code>T</code>拥有相同的布局和ABI，当然它也会是FFI安全的。这一规则适用于<code>&amp;</code>, <code>&amp;mut</code>和函数指针等所有非空的指针。</li>
+<li>在<code>repr(C)</code>中元组结构体与结构体基本相同，唯一的不同是其成员都是未命名的。</li>
+<li>对于枚举的处理和<code>repr(u*)</code>是相同的（见下一节）。选择的类型尺寸等于目标平台上C的应用二进制接口(ABI)的默认枚举尺寸。注意C中枚举的数据布局是确定的，所以这确实是一种“最合理的假设”。不过，当目标C代码编译时加了一些特殊的编译器参数时，这一点可能就不正确了。</li>
+<li><code>repr(C)</code>和<code>repr(u*)</code>中无成员的枚举不能被赋值为一个没有对应变量的整数，尽管在C\C++中这是一种合法的行为。构建一个没有对应变量的枚举类型实例属于未定义行为。（对于存在准确匹配的值是允许正常编写和编译的）</li>
+</ul>
+<h2 id="repru-repri"><a class="header" href="#repru-repri">repr(u*), repr(i*)</a></h2>
+<p>这两个可以指定无成员枚举的大小。如果枚举变量对应的整数值对于设定的大小越界了，将产生一个编译期错误。你可以手工设置越界的元素为0以避免编译错误，不过要注意Rust是不允许一个枚举中的两个变量拥有相同的值的。</p>
+<p>“无成员枚举”的意思是枚举的每一个变量里都不关联数据。不指定<code>repr(u*)</code>或<code>repr(i*)</code>的无成员枚举依然是一个Rust的合法原生类型，它们都没有固定的ABI表示方法。给它们指定<code>repr</code>使其有了固定的类型大小，方便在ABI中使用。</p>
+<p>Rust中所有有成员的枚举都没有确定的ABI表示方式（即使关联的数据只是<code>PhantomData</code>或者零尺寸类型的数据）。</p>
+<p>为枚举显式指定<code>repr</code>后空指针优化将不再起作用。</p>
+<p>这些<code>repr</code>对于结构体无效。</p>
+<h2 id="reprpacked"><a class="header" href="#reprpacked">repr(packed)</a></h2>
+<p><code>repr(packed)</code>强制Rust不填充空数据，各个类型的数据紧密排列。这样有助于提升内存的使用效率，但很可能会导致其他的副作用。</p>
+<p>尤其是大部分平台都强烈建议数据对齐。这意味着加载未对齐的数据会很低效（x86)，甚至是错误的(一些ARM芯片)。像直接加载或存储打包的(packed)成员变量这种简单的场景，编译器可能可以用shift和mask等方式隐藏对齐问题。但是如果是使用一个打包的变量的引用，编译器很可能没办法避免未对齐加载问题。</p>
+<p><a href="https://github.com/rust-lang/rust/issues/27060"><strong>在Rust 1.0中这会导致未定义行为</strong></a></p>
+<p><code>repr(packed)</code>不应该随便使用。只有在你有一些极端的需求的情况下才该用它。</p>
+<p>这个repr是<code>repr(C)</code>和<code>repr(Rust)</code>的修饰器。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="2.2.类型中的奇行种.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="3.所有权.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="2.2.类型中的奇行种.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="3.所有权.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
