@@ -2,6 +2,8 @@
 
 《Rust死灵书 - Rust高级与非安全程序设计》(Rustonomicon)的简体中文翻译版。
 
+在线阅读：https://ixanadu13.github.io/rustonomicon_zh-CN/
+
 原文链接：<https://doc.rust-lang.org/nomicon/>  
 原文Repository：<https://github.com/rust-lang-nursery/nomicon>
 
